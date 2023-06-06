@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculadora de Conta</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+        }
+
+        .form-container h3 {
+            margin-top: 0;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .form-container label {
+            flex: 0 0 200px;
+        }
+
+        .form-container input,
+        .form-container select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-container button {
+            margin-left: 200px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .clientes-container ul {
+            padding-left: 20px;
+        }
+
+        .clientes-container li {
+            margin-bottom: 10px;
+        }
+
+        .clientes-container li span {
+            font-weight: bold;
+        }
+
+        .calcular-form {
+            margin-top: 20px;
+        }
+
+        .calcular-form label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Conta</h1>
+
+        <!-- Formulário para adicionar cliente -->
+        <div class="form-container">
+            <h3>Adicionar Cliente</h3>
+            <form action="/adicionarCliente" method="post">
+                <label for="nomeCliente">Nome do Cliente:</label>
+                <input type="text" id="nomeCliente" name="nome" required>
+                <button type="submit">Adicionar</button>
+            </form>
+        </div>
+
+        <!-- Lista de clientes -->
+        <div class="clientes-container">
+            <h3>Clientes:</h3>
+            <ul>
+                <li th:each="cliente, clienteIndex : ${clientes}">
+                    <span th:text="${cliente.nome}"></span> - Valor por pessoa: <span th:text="${cliente.valorPessoa}"></span>
+                    <!-- Formulário para adicionar produto -->
+                    <div class="form-container">
+                        <form action="/adicionarProduto" method="post">
+                            <input type="hidden" name="indiceCliente" th:value="${clienteIndex.index}">
+                            <label for="nomeProduto">Nome do Produto:</label>
+                            <input type="text" id="nomeProduto" name="nome" required>
+                            <label for="valorProduto">Valor do Produto:</label>
+                            <input type="number" id="valorProduto" name="valor" step="0.01" required>
+                            <button type="submit">Adicionar Produto</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Formulário para calcular conta -->
+        <div class="calcular-form">
+            <h3>Calcular Conta:</h3>
+            <form action="/calcularConta" method="post">
+                <label for="indiceCliente">Selecione um cliente:</label>
+                <select id="indiceCliente" name="indiceCliente">
+                    <option th:each="cliente, clienteIndex : ${clientes}" th:value="${clienteIndex.index}"
+                            th:text="${cliente.nome}"></option>
+                </select>
+                <label for="cobrarServico">Cobrar 10% do garçom:</label>
+                <input type="checkbox" id="cobrarServico" name="cobrarServico" value="true">
+                <button type="submit">Calcular</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
